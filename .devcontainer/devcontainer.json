@@ -1,0 +1,11 @@
+{
+  "name": "Auto install claude extensions on this repo/codespace",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "anthropic.claude-code",
+        "ms-toolsai.jupyter"
+      ]
+    }
+  }
+}
