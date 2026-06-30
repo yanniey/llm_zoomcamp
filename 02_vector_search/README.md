@@ -1,8 +1,12 @@
-Week 2: vector search
+# Week 2: vector search
+* vector search with approximate nearest neighbours (ANN)
+* persistent knowledge base
 
-starting a new uv env because we're using transformers this week
+
+There's a new uv env for this week because we're using transformers in week 2
 
 ```
-uv init
-uv add requests minsearch openai jupyter python-dotenv sentence-transformers
+uv sync
 ```
+
+2 helper functions - `ingest.py` and `rag_help.py` -  are from Week 1
