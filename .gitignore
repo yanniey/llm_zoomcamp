@@ -1,0 +1,13 @@
+.venv
+.env
+
+
+
+# Byte-compiled / optimized / DLL files
+# Ignore all __pycache__ directories
+__pycache__/
+
+# Ignore all compiled Python files
+*.pyc
+*.py[codz]
+*$py.class
