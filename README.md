@@ -6,7 +6,7 @@ Week 1:
 * persistent knowledge base (`sqlite`) & indexing 
 * agentic RAG
     * function calling
-    * agentic loop
+    * agentic loops
     * frameworks for running agentic loops 
 
 Week 2: 

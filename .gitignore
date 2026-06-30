@@ -4,6 +4,7 @@ faq.db*
 *.db
 *.db-shm
 *.db-wal
+.ruff_cache/
 
 # Ignore all __pycache__ directories
 __pycache__/
