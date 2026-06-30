@@ -1,9 +1,10 @@
 .venv
 .env
+faq.db*
+*.db
+*.db-shm
+*.db-wal
 
-
-
-# Byte-compiled / optimized / DLL files
 # Ignore all __pycache__ directories
 __pycache__/
 
