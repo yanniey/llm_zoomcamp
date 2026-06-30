@@ -12,11 +12,10 @@ Week 1:
 Week 2: 
 * vector search
 
-## Setup
+## Setup 
 ```
 pip install uv
-uv init
-uv add requests minsearch openai jupyter python-dotenv
+uv sync 
 ```
 
 ## Notebooks 
