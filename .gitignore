@@ -7,6 +7,10 @@ faq.db*
 .ruff_cache/
 .python-version
 
+# ignore the .onnx & tokenizer.json file for week 2's homework from Github. Running the notebooks will recreate them.
+02_vector_search/homework/models/
+
+
 # Ignore all __pycache__ directories
 __pycache__/
 
