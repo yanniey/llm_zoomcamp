@@ -22,6 +22,19 @@
 ## Week 3:
 * Workflow orchestration with Kestra
 
+## Week 4:
+* Evaluation: 
+  * Search eval: does the search return the right docs?
+    * Metrics: 
+      - 1. Hit Rate
+      - 2. MRR (Mean Reciprocal Rank)
+  * RAG eval: does the LLM generate good answers?
+    * Metric: LLM-as-a-judge
+  * Agent eval: does the agent user tools efficiently?
+    * Metrics:
+      - 1. Final answer
+      - 2. tool-recall trajectory
+
 ## Setup 
 ```
 pip install uv
