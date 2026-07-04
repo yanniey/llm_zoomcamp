@@ -20,3 +20,6 @@ dependencies = [
 members = [
     "02_vector_search",
 ]
+
+[tool.ruff.format]
+preview = true

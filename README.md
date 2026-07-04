@@ -1,5 +1,5 @@
 # llm_zoomcamp
-2026-06
+2026 cohort of the [LLM Zoomcamp ran by DataTalksClub](https://github.com/DataTalksClub/llm-zoomcamp/tree/main)
 
 ## Week 1: 
 * RAG
