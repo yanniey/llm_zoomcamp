@@ -29,7 +29,7 @@
       - 1. Hit Rate
       - 2. MRR (Mean Reciprocal Rank)
   * RAG eval: does the LLM generate good answers?
-    * Metric: LLM-as-a-judge
+    * Metrics: LLM-as-a-judge
   * Agent eval: does the agent user tools efficiently?
     * Metrics:
       - 1. Final answer
