@@ -44,3 +44,9 @@ uv sync
 
 ## Homeworks 
 * [Answer to Homeworks](https://courses.datatalks.club/llm-zoomcamp-2026/)
+
+
+
+TODO
+1. create ground data for askmii for search eval (week 4)
+2. create a dataset of docs retrieved for a convo in askmii
