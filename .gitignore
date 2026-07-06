@@ -6,6 +6,7 @@ faq.db*
 *.db-wal
 .ruff_cache/
 .python-version
+.csv
 
 # ignore the .onnx & tokenizer.json file for week 2's homework from Github. Running the notebooks will recreate them.
 02_vector_search/homework/models/
