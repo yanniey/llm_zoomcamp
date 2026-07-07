@@ -50,3 +50,4 @@ uv sync
 TODO
 1. create ground data for askmii for search eval (week 4)
 2. create a dataset of docs retrieved for a convo in askmii
+3. implement LLM-as-a-judge for Askmii
