@@ -2,8 +2,8 @@ import sys
 
 from dotenv import load_dotenv
 from ingest import build_index, load_faq_data
+from metrics import RAGWithMetrics
 from openai import OpenAI
-from rag_helper import RAGBase
 
 
 def create_assistant():
@@ -12,7 +12,7 @@ def create_assistant():
     documents = load_faq_data()
     index = build_index(documents)
 
-    return RAGBase(
+    return RAGWithMetrics(
         index=index,
         llm_client=OpenAI(),
     )
