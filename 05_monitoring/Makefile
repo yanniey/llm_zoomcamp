@@ -4,13 +4,13 @@ run:
 chat:
 	uv run streamlit run app.py
 
-network:
-	docker network create monitoring
-
-network:
-	docker network create monitoring
+network: 
+    # skips network creation if network already exists
+	docker network inspect monitoring >/dev/null 2>&1 || docker network create monitoring
 
 postgres: network
+    # force-removes any stale course-assistant-pg container before starting a new one (the data is safe since it lives in the pgdata named volume, not the container 
+	docker rm -f course-assistant-pg >/dev/null 2>&1 || true
 	docker run -it \
 		--name course-assistant-pg \
 		--network monitoring \

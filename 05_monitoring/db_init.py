@@ -11,9 +11,9 @@ print(f"Using timezone: {DB_TIMEZONE}")
 def get_db_connection():
     return psycopg.connect(
         host=os.getenv("POSTGRES_HOST", "localhost"),
-        dbname=os.getenv("POSTGRES_DB", "course_asssistant"),
-        user=os.getenv("POSTGRE_USER", "user"),
-        password=os.getenv("POSTGRE_PASSWORD", "password"),
+        dbname=os.getenv("POSTGRES_DB", "course_assistant"),
+        user=os.getenv("POSTGRES_USER", "user"),
+        password=os.getenv("POSTGRES_PASSWORD", "password"),
     )
 
 
@@ -23,10 +23,10 @@ def init_db(drop=False):
     try:
         with conn.cursor() as cur:
             if drop:
-                cur.execute("DROP TABLE IF EXISTS LLMCallRecord")
+                cur.execute("DROP TABLE IF EXISTS LLMCallRecords")
 
             cur.execute("""
-            CREATE TABLE LLMCallRecord (
+            CREATE TABLE LLMCallRecords (
                     id SERIAL PRIMARY KEY,
                     question TEXT NOT NULL,
                     answer TEXT NOT NULL,
@@ -43,6 +43,7 @@ def init_db(drop=False):
                 )
             """)
 
+        conn.commit()
     finally:
         conn.close()
 

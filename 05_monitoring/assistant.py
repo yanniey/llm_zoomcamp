@@ -1,5 +1,6 @@
 import sys
 
+from db_save import save_conversation
 from dotenv import load_dotenv
 from ingest import build_index, load_faq_data
 from metrics import RAGWithMetrics
@@ -27,3 +28,6 @@ if __name__ == "__main__":
 
     answer = assistant.rag(query)
     print(answer)
+
+    # make sure that every CLI test is saved in postgreDB
+    save_conversation(assistant.last_call, query, "llm-zoomcamp")
