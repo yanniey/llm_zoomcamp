@@ -1,6 +1,11 @@
 ## Week 5: Monitoring
-* Build a streamlit app
-* Use python to create a PostgreDB and Store the LLM logs in a SQL DB
+* Build a streamlit app to:
+    * Chat with LLM - `make chat` 
+    * Visualise the data we're collecting - `make dashboard`
+* Use python to create a PostgreDB and the logs in a Postgres DB, which is then fed to Grafana
+* Collect user feedbacks 
+* See `Makefile` for shortcuts
+
 
 #### Setup
 
@@ -26,16 +31,18 @@ Start PostgreSQL with a volume for data persistence and connect it to the networ
 make postgres
 ```
 
-SQL to create the table:
-
-make sure that postgre is running in docker before doing this. 
+SQL to create the table: make sure that postgre is running in docker before doing this. 
 ```
 uv run python db_init.py
 ```
 
-check the data:
+check the data in `LLMCallRecords`:
 ```
 docker exec -it course-assistant-pg psql -U user -d course_assistant \
     -c "SELECT id, question, response_time, cost FROM LLMCallRecords;"
 ```
-* Use `Makefile` to set up shortcuts
+
+do the same & check the data using python:
+```
+uv run python db_query.py
+```
