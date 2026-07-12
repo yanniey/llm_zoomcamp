@@ -3,7 +3,7 @@
     * Chat with LLM - `make chat` 
     * Visualise the data we're collecting - `make dashboard`
 * Use python to create a PostgreDB and the logs in a Postgres DB, which is then fed to Grafana
-* Collect user feedbacks 
+* Collect user feedbacks & use LLM-as-a-judge
 * See `Makefile` for shortcuts
 
 
@@ -22,10 +22,6 @@ Add dependencies:
 uv add python-dotenv streamlit "psycopg[binary]"
 ```
 
-Create a docker network for postgreDB and Grafana:
-```
-make network
-```
 Start PostgreSQL with a volume for data persistence and connect it to the network:
 ```
 make postgres
@@ -42,7 +38,10 @@ docker exec -it course-assistant-pg psql -U user -d course_assistant \
     -c "SELECT id, question, response_time, cost FROM LLMCallRecords;"
 ```
 
-do the same & check the data using python:
+ramp up 2 streamlit apps: 1 for the chat interface, 1 for log dashboard
 ```
-uv run python db_query.py
+make chat
+make dashboard
 ```
+
+* [Week 5 tutorial link](https://github.com/DataTalksClub/llm-zoomcamp/tree/main/05-monitoring)

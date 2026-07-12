@@ -49,6 +49,9 @@ def init_db(drop=False):
 
 
 # create another table to store user feedbacks
+# source: "user" = human feedback, "judge" for LLM eval
+# score: +1 for thumbs up, -1 for thumbs down
+# relevance & explanation: will be used later by the built-in judge
 def init_feedback():
     conn = get_db_connection()
     try:
