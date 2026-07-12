@@ -56,7 +56,7 @@ def row_to_record(row):
 
 
 def get_conversations(limit=5):
-    # get the top 5 most recent calls
+    """get the top 5 most recent calls"""
     conn = get_db_connection()
     try:
         with conn.cursor() as cur:
@@ -77,6 +77,44 @@ def get_conversations(limit=5):
         conn.close()
 
     return [row_to_record(row) for row in rows]
+
+
+def get_relevance_stats() -> dict[str, int]:
+    """Count judge-rated feedback rows by relevance label.
+
+    e.g. {'RELEVANT': 12, 'PARTLY_RELEVANT': 3}
+    """
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT relevance, COUNT(*)
+                FROM feedback
+                WHERE source = 'judge'
+                GROUP BY relevance
+            """)
+            rows = cur.fetchall()
+    finally:
+        conn.close()
+    return dict(rows)
+
+
+def get_user_feedback_stats():
+    """show all user feedbacks, +1 or -1"""
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT
+                    SUM(CASE WHEN score > 0 THEN 1 ELSE 0 END),
+                    SUM(CASE WHEN score < 0 THEN 1 ELSE 0 END)
+                FROM feedback
+                WHERE source = 'user'
+            """)
+            row = cur.fetchone()
+    finally:
+        conn.close()
+    return row
 
 
 if __name__ == "__main__":

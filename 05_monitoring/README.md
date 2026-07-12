@@ -3,7 +3,9 @@
     * Chat with LLM - `make chat` 
     * Visualise the data we're collecting - `make dashboard`
 * Use python to create a PostgreDB and the logs in a Postgres DB, which is then fed to Grafana
-* Collect user feedbacks & use LLM-as-a-judge
+* Collect user feedbacks & use LLM-as-a-judge for relevancy - `judge.py`
+* Create synthetic data to show what the streamlit dashboard would look like based on those stored in Postgre - `generate_synthetic_data.py`
+* Display dashboard in grafana
 * See `Makefile` for shortcuts
 
 
