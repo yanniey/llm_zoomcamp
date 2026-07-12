@@ -44,4 +44,9 @@ make chat
 make dashboard
 ```
 
+test LLM-as-a-judge for relevance:
+```
+uv run python judge.py
+```
+
 * [Week 5 tutorial link](https://github.com/DataTalksClub/llm-zoomcamp/tree/main/05-monitoring)
