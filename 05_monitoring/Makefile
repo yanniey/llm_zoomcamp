@@ -27,6 +27,7 @@ dashboard:
 	uv run streamlit run dashboard.py --server.port 8502
 
 grafana:
+	docker rm -f grafana >/dev/null 2>&1 || true
 	docker run -d \
     --name grafana \
     --network monitoring \
