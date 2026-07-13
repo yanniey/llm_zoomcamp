@@ -3,18 +3,18 @@
 
 <table>
   <tr>
-    <td width="300" height="200"><img src="screenshots/week5_make_chat.png" width="300" height="200"></td>
-    <td width="300" height="200"><img src="screenshots/week5_make_dashboard.png" width="300" height="200"></td>
+    <td width="270"><img src="screenshots/week5_make_chat.png" width="270" height="300"></td>
+    <td width="215"><img src="screenshots/week5_make_dashboard.png" width="215" height="300"></td>
   </tr>
   <tr>
     <td width="300">Chat interface</td>
     <td width="300">Streamlit dashboard for the logs</td>
   </tr>
   <tr>
-    <td colspan="2" width="800" height="200" align="center"><img src="screenshots/week5_grafana_dashboard.png" width="300" height="200"></td>
+    <td colspan="2" align="center"><img src="screenshots/week5_grafana_dashboard.png" width="700" height="343"></td>
   </tr>
   <tr>
-    <td colspan="4" width="800" align="center">Grafana monitoring dashboard, tracks response time, cost, tokens, and which models we use. </td>
+    <td colspan="2" align="center">Grafana monitoring dashboard, tracks response time, cost, tokens, and which models we use. </td>
   </tr>
 </table>
 
