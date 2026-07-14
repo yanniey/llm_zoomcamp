@@ -3,22 +3,31 @@
 Sets up the text-search RAG from homework 1 and a shared OpenAI client.
 """
 
+import sqlite3
+
 from dotenv import load_dotenv
 from gitsource import GithubRepositoryDataReader
 from minsearch import Index
 from openai import OpenAI
 from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import ConsoleSpanExporter, SimpleSpanProcessor
+from opentelemetry.sdk.trace.export import (
+    SimpleSpanProcessor,
+    SpanExporter,
+    SpanExportResult,
+)
 from rag_helper import RAGBase
 
 load_dotenv()
 
 # set up OpenTelemetry
 provider = TracerProvider()  # creates the SDK's central configuration object. It owns the span processors and decides how spans are built.
-provider.add_span_processor(
-    SimpleSpanProcessor(ConsoleSpanExporter())
-)  # wires a processor that forwards every finished span to the console exporter, one at a time. "Simple" means synchronous and immediate
+# provider.add_span_processor(
+#     SimpleSpanProcessor(ConsoleSpanExporter())
+# )
+# commented out after Q3
+# # wires a processor that forwards every finished span to the console exporter, one at a time. "Simple" means synchronous and immediate
+
 trace.set_tracer_provider(
     provider
 )  # registers the provider globally, so every call to trace.get_tracer(...) returns a tracer backed by it.
@@ -64,16 +73,58 @@ class RAGTraced(RAGBase):
             span.set_attribute("num of docs retrieved", len(search_results))
         return search_results
 
-    def rag(self, query):
-        with tracer.start_as_current_span("rag") as span:
-            search_results = self.search(query)
-            prompt = self.build_prompt(query, search_results)
-            answer = self.llm(prompt)
-            span.set_attribute("answer", answer.output_text)
-        return answer.output_text
+    # def rag(self, query):
+    #     with tracer.start_as_current_span("rag") as span:
+    #         search_results = self.search(query)
+    #         prompt = self.build_prompt(query, search_results)
+    #         answer = self.llm(prompt)
+    #         span.set_attribute("answer", answer.output_text)
+    #     return answer.output_text
 
 
 rag = RAGTraced(index=index, llm_client=client)
+
+
+class SQLiteSpanExporter(SpanExporter):
+    def __init__(self, db_path="traces.db"):
+        self.conn = sqlite3.connect(db_path)
+        self.conn.execute("""
+            CREATE TABLE IF NOT EXISTS spans (
+                name TEXT,
+                start_time INTEGER,
+                end_time INTEGER,
+                input_tokens INTEGER,
+                output_tokens INTEGER,
+                cost REAL
+            )
+        """)
+        self.conn.commit()
+
+    def export(self, spans):
+        for span in spans:
+            attrs = dict(span.attributes or {})
+            self.conn.execute(
+                "INSERT INTO spans VALUES (?,?,?,?,?,?)",
+                (
+                    span.name,
+                    span.start_time,
+                    span.end_time,
+                    attrs.get("input_tokens"),
+                    attrs.get("output_tokens"),
+                    attrs.get("costs"),
+                ),
+            )
+        self.conn.commit()
+        return SpanExportResult.SUCCESS
+
+    def shutdown(self):
+        self.conn.close()
+
+    def force_flush(self):
+        return True
+
+
+provider.add_span_processor(SimpleSpanProcessor(SQLiteSpanExporter("traces.db")))
 
 
 if __name__ == "__main__":
