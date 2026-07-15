@@ -177,6 +177,8 @@ Re-run the query from Q1. Which span names appear in the `spans` table?
 * [x] `rag`, `search`, and `llm`
 * [] `search`, `llm`, and `judge`
 
+![Q4 screenshot](screenshots/week5_homework_q4.png)
+
 ## Q5. Querying trace data
 
 The traces are now in SQLite. Run one more query through the traced
@@ -193,6 +195,7 @@ excluding `rag`. Which span type takes the most total time?
 * [x] `llm`
 * [] They're all about the same
 
+![Q5 screenshot](screenshots/week5_homework_q5.png)
 
 Q6. Token stability across runs
 Load the SQLite data with pandas. One thing a dashboard can tell you is how stable your system is. If the same query always produces the same number of input tokens, the context your RAG retrieves is consistent. If it varies a lot, something in the search may be unstable.
@@ -205,3 +208,5 @@ How much do the input tokens vary across these 4 runs?
 * [] Within 10% of each other
 * [] Within 50% of each other
 * [] They vary more than 50%
+
+![Q6 screenshot](screenshots/week5_homework_q6.png)

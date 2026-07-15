@@ -51,6 +51,12 @@
 * Display dashboard in grafana
 * See `Makefile` for shortcuts
 
+## (Optional) [Week 6: Best Practices](https://github.com/DataTalksClub/llm-zoomcamp/tree/main/06-best-practices)
+* Techniques to improve RAG retrieval quality
+  * hybrid search
+  * document reranking
+* ElasticSearch and LangChain 
+
 ## Setup 
 ```
 pip install uv
