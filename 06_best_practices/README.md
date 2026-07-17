@@ -1,11 +1,11 @@
-## Five techniques to improve retrieval quality
+## 5 techniques to improve retrieval quality
 
 1. Small-to-big chunk retrieval - use small chunks for indexing but retrieve surrounding context (e.g. parent-child document retrieval (LangChain's ParentDocumentRetriever), sentence-window retrieval) for the LLM
 
 2. Leveraging document metadata - use titles, topics, dates, and
    other metadata to filter and boost results
 
-3. Hybrid search - combine vector search (semantic) with keyword search  in one query
+3. Hybrid search - combine vector search (semantic) with keyword search in one query
 
 4. User query rewriting - use an LLM to reformulate the user's question into a more structured query
 
