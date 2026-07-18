@@ -16,6 +16,11 @@
   <tr>
     <td colspan="2" align="center">Grafana monitoring dashboard, tracks response time, cost, tokens, and which models we use. </td>
   </tr>
+  <tr>
+    <td colspan="2" align="center"><img src="screenshots/week8_dlt_pipeline.png" width="270" height="300"></td>
+      <tr>
+    <td colspan="2" align="center">DLT pipeline dashboard </td>
+  </tr>
 </table>
 
 
@@ -51,11 +56,18 @@
 * Display dashboard in grafana
 * See `Makefile` for shortcuts
 
-## (Optional) [Week 6: Best Practices](https://github.com/DataTalksClub/llm-zoomcamp/tree/main/06-best-practices)
+## [Week 6: Best Practices](https://github.com/DataTalksClub/llm-zoomcamp/tree/main/06-best-practices)
 * Techniques to improve RAG retrieval quality
   * hybrid search
   * document reranking
 * ElasticSearch and LangChain 
+
+## Week 7: Project - Fitness Assistant
+* End-to-End project 
+
+## Week 8: Workshop - dlt
+* Use dlt to pull traces for dashboards
+
 
 ## Setup 
 ```

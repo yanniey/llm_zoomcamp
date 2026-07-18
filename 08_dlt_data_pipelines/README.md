@@ -1,4 +1,11 @@
 ## Use dlt to pull traces from a monitoring service
+[dlt pipeline dashboard]()
+
+<table>
+  <tr>
+    <td width="270"><img src="../screenshots/week8_dlt_pipeline.png" width="270" height="300"></td>
+  </tr>
+</table>
 
 * build data pipelines, dashboards and a scheduled cloud deployment driven by natural language prompts
 * Tools
@@ -50,14 +57,11 @@ uvx dlthub-init@latest
 
 build a dlt pipeline that reads the JSONL session transcripts from ~/.claude/projects/ and loads them into DuckDB. We don't write the code by hand. We tell the agent what to build, and it uses the dltHub AI workbench to write the pipeline.
 
-Tell the agent to build a dlt pipeline for the local logs:
+Tell the agent(Claude/Codex/Gemini) to build a dlt pipeline for the local logs:
 
-> build a dlt pipeline, load data from local Claude logs as raw JSONs
-> into DuckDB
+> build a dlt pipeline, load data from local Claude logs as raw JSONs into DuckDB
 
-The agent starts with the dltHub router skill, which figures out that
-the data lives in files on disk. It installs the filesystem-pipeline
-toolkit on demand - this toolkit didn't exist in the project when you
+The agent starts with the dltHub router skill, which figures out that the data lives in files on disk. It installs the filesystem-pipeline toolkit on demand - this toolkit didn't exist in the project when you
 started. The router pulls it in based on the data source.
 
 The toolkit walks the agent through the standard workflow:

@@ -4,8 +4,8 @@ import json
 from typing import Iterator
 
 import dlt
-from dlt.sources.filesystem import filesystem, FileItemDict
 from dlt.sources import TDataItems
+from dlt.sources.filesystem import FileItemDict, filesystem
 
 
 @dlt.transformer
@@ -35,7 +35,7 @@ def load_raw_events() -> None:
         pipeline_name="claude_logs_pipeline",
         destination="duckdb",
         dataset_name="claude_logs",
-        dev_mode=True,  # fresh dataset on every run during dev
+        dev_mode=True,  # adds a timestamp to the dataset name on every run, so each run starts fresh.
     )
 
     files = filesystem(file_glob="*.jsonl")
