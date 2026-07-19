@@ -51,8 +51,8 @@ def agent_traces_source(base_url: str = dlt.config.value) -> Any:
     yield from rest_api_resources(config)
 
 
-# run this as a cron job every time at 12 pm
-@run.pipeline("agent_traces_pipeline", trigger=trigger.schedule("0 12 * * *"))
+# run this as a cron job every Sunday at 12 pm
+@run.pipeline("agent_traces_pipeline", trigger=trigger.schedule("0 12 * * 0"))
 def load_logs(row_limit: int = 20_000) -> None:
     pipeline = dlt.pipeline(
         pipeline_name="agent_traces_pipeline",
