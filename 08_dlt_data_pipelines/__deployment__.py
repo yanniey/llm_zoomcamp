@@ -1,6 +1,12 @@
-"""Deployment manifest — import the pipelines and notebooks you want to deploy and list them in __all__."""
+"""
+load_logs - ingest Claude Code agent traces from the fake Anthropic-mimicking /logs API into duckdb.
+agent_traces_report: marimo report on agent traces from REST API.
 
-# from pipeline import my_pipeline
-# from notebook import my_notebook
+schedule this as a daily CRON job/
 
-__all__: list[str] = []
+"""
+
+import agent_traces_report
+from rest_api_pipeline import load_logs
+
+__all__: list[str] = ["load_logs", "agent_traces_report"]

@@ -1,5 +1,8 @@
 ## Week8 workshop: Use dlt to pull traces from Claude (both locally and from a fake API that mimics Anthropic API), and display in a dashboard
 
+* This workshop is a little chaotic & the docs are. Because we use LLM to scaffold the toolkits, the functions are named differently to how they are in the tutorial. 
+* I'm recommend watching the [tutorial video](https://www.youtube.com/watch?v=A0LmmZf-ggM) and follow it along. 
+
 <table>
 <tr>
     <td align="center"><img src="../screenshots/week8_fake_anthropic_api_doc.png" width="300"></td>
@@ -33,15 +36,15 @@
 * build data pipelines, dashboards and a scheduled cloud deployment driven by natural language prompts
 * Tools
     * dltHub AI workbench (dlt + toolkits + MCP)
-    * dltHub Platform
+    * dltHub Platform (requires a dlthub account, free for 2 weeks)
     * DuckDB
-    * marimo [`claude_usage_report.py`](claude_usage_report.py)
+    * marimo [`claude_usage_report.py`](claude_usage_report.py) and [`rest_api_pipeline.py`](rest_api_pipeline.py)
 
 ---
 
 #### What this app does
 
-Every time we use a coding agent like Claude Code, Codex, or Copilot,it stores metadata about every session on your laptop. The logs live in places like `~/.claude/projects/` as JSONL files, one JSON object per line. They contain usage data, token counts, model names, tool calls - valuable data trapped in an awkward nested format.
+Every time we use a coding agent like Claude Code, Codex, or Copilot,it stores metadata about every session on our laptops & remotely in the APIs. The local logs live in places like `~/.claude/projects/` as JSONL files, one JSON object per line. They contain usage data, token counts, model names, tool calls - valuable data trapped in an awkward nested format.
 
 This project turns those logs into structured tables and dashboards, using `dlt` and the `dltHub AI workbench`, which lets a coding agent build pipelines from natural-language prompts.
 
@@ -72,6 +75,7 @@ flowchart LR
 - A coding agent: Claude Code, Codex, or Copilot
 - A dltHub Platform account (free): [app.dlthub.com](https://app.dlthub.com/)
 - Some local agent logs so `~/.claude/projects/` has JSONL files to load.
+- add `deltalake`: `uv add deltalake`
 
 #### Setup
 ```bash
@@ -122,7 +126,98 @@ uv run marimo edit claude_usage_report.py
 
 Pull tracing logs from Logfire/Langfuse/DataDog/Anthropic API, load it into a database so that we can analyse it. dlt handles the data normalisation.  
 ```bash
-build a dlt pipeline for https://test-agent-traces-api-xt2e7ottma-ew.a.run.app/docs, for /logs endpoint, load 20k logs into DuckDB, and build a similar marimo report
-
-
+build a dlt pipeline for https://test-agent-traces-api-xt2e7ottma-ew.a.run.app/docs, for /logs endpoint, load 20k logs into DuckDB, and build a similar marimo report but using the fake api data
 ```
+
+## Run it
+
+Run the pipeline with a sample first, then a full load:
+
+```bash
+uv run python code/rest_api_pipeline.py          # one page, 1000 records
+uv run python code/rest_api_pipeline.py --full   # all 1 million records
+```
+
+The same normalization happens: dlt infers types, flattens nested
+objects like `message.content` into child tables linked by
+`_dlt_parent_id`. The nested `usage` object becomes columns like
+`usage__output_tokens` with double-underscore separators.
+
+---
+
+# Part 2: Deploy to the cloud
+
+Both pipelines work locally, but you can't share local dashboards with
+your team. The dltHub Platform lets you deploy pipelines and dashboards
+to the cloud, schedule them, and share them with colleagues.
+
+## Log in
+
+Connect your local workspace to the dltHub Platform:
+
+```bash
+uv run dlthub login              # device-code OAuth in the browser
+uv run dlthub workspace connect  # pick or create a workspace
+```
+
+After connecting, open the platform UI:
+
+```bash
+uv run dlthub show
+```
+
+## Deploy the pipeline
+
+Tell the agent to deploy the REST API pipeline:
+
+> deploy this (`rest_api_pipeline.py`) on the dlthub platform, use duckdb as destination
+
+The agent installs the dlthub-platform toolkit. It goes through a
+five-step checklist before deploying, then registers the pipeline in
+`__deployment__.py` and deploys it.
+
+You can also do it manually:
+
+```bash
+uv run dlthub deploy   # ship the current project as a new version
+uv run dlthub run      # run the pipeline on the cloud
+```
+
+Repeat this deploy-and-run cycle after every code change so the cloud
+always reflects your latest version.
+
+
+## Ephemeral storage
+
+When you deploy with DuckDB as the destination, the data goes to
+ephemeral storage. The platform runs your pipeline in a container,
+and when the job finishes, the local files are removed. The data
+doesn't persist across runs.
+
+## Switch to the Playground destination
+
+To persist data, switch from `duckdb` to the `playground` destination,
+which is a managed S3 lake that keeps data across runs.
+
+In `rest_api_pipeline.py`, change the destination:
+
+```python
+# was:
+#   destination="duckdb"
+# now:
+destination = "playground"
+```
+
+
+The playground destination requires the `deltalake` package, so
+after changing the destination, redeploy and run it.
+
+Then run the pipeline again:
+```bash
+uv run dlthub deploy
+uv run dlthub run
+```
+
+If the run fails because `deltalake` is missing, the deploy step adds
+the dependency to `pyproject.toml` automatically. Redeploy and run
+again.

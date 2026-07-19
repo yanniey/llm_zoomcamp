@@ -1,10 +1,11 @@
 # put your configuration values here
 
 [runtime]
-log_level="INFO"  # the system log level of dlt
-http_show_error_body = true
+log_level="WARNING"  # the system log level of dlt
 # use the dlthub_telemetry setting to enable/disable anonymous usage data reporting, see https://dlthub.com/docs/reference/telemetry
 dlthub_telemetry = true
+workspace_id = "678f556e-100e-4af9-b8e1-9b26a00b14db"
+organization_id = "90ada07e-4232-4739-816f-a7386ddc93cf"
 
 [sources.filesystem]
 bucket_url = "file:///home/codespace/.claude/projects/-workspaces-llm-zoomcamp-08-dlt-data-pipelines"
@@ -12,3 +13,6 @@ bucket_url = "file:///home/codespace/.claude/projects/-workspaces-llm-zoomcamp-0
 [sources.agent_traces]
 base_url = "https://test-agent-traces-api-xt2e7ottma-ew.a.run.app"
 
+
+[workspace.settings]
+name = "playground"

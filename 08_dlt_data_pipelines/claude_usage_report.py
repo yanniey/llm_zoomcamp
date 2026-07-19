@@ -1,4 +1,4 @@
-# use marimo to build a report on claude logs
+# use marimo to build a report on local claude logs
 import marimo
 
 __generated_with = "0.23.13"
