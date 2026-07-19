@@ -2,8 +2,6 @@
 load_logs - ingest Claude Code agent traces from the fake Anthropic-mimicking /logs API into duckdb.
 agent_traces_report: marimo report on agent traces from REST API.
 
-schedule this as a daily CRON job/
-
 """
 
 import agent_traces_report

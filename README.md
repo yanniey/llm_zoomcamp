@@ -68,6 +68,10 @@
 ## Week 8: Workshop - dlt
 * Use dlt to pull traces for dashboards
 
+<!-- Paste the github.com/user-attachments/assets/... URL below (see instructions: drag the mp4 into a GitHub issue/PR comment box to get this URL) -->
+<!-- https://github.com/user-attachments/assets/REPLACE-ME -->
+
+
 
 ## Setup 
 ```
