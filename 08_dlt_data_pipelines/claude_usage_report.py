@@ -1,3 +1,4 @@
+# use marimo to build a report on claude logs
 import marimo
 
 __generated_with = "0.23.13"
@@ -6,15 +7,12 @@ app = marimo.App(width="medium")
 
 @app.cell
 def _():
-    import marimo as mo
     import json
-    import glob
-    import os
     from pathlib import Path
-    from datetime import datetime, timezone
 
-    import pandas as pd
     import altair as alt
+    import marimo as mo
+    import pandas as pd
 
     mo.md("# Claude Code Usage Report")
     return Path, alt, json, mo, pd
@@ -94,15 +92,13 @@ def _(pd, raw_records):
         git_branch = rec.get("gitBranch")
 
         if rtype in ("user", "assistant"):
-            message_rows.append(
-                {
-                    "timestamp": ts,
-                    "project": project,
-                    "session_id": session_id,
-                    "role": rtype,
-                    "cwd": cwd,
-                }
-            )
+            message_rows.append({
+                "timestamp": ts,
+                "project": project,
+                "session_id": session_id,
+                "role": rtype,
+                "cwd": cwd,
+            })
 
         if rtype != "assistant":
             continue
@@ -113,46 +109,49 @@ def _(pd, raw_records):
 
         for block in message.get("content") or []:
             if block.get("type") == "tool_use":
-                tool_call_rows.append(
-                    {
-                        "timestamp": ts,
-                        "project": project,
-                        "session_id": session_id,
-                        "tool_name": block.get("name"),
-                    }
-                )
+                tool_call_rows.append({
+                    "timestamp": ts,
+                    "project": project,
+                    "session_id": session_id,
+                    "tool_name": block.get("name"),
+                })
 
         if request_id is None or request_id in seen_request_ids:
             continue
         seen_request_ids.add(request_id)
 
         usage = message.get("usage") or {}
-        usage_rows.append(
-            {
-                "timestamp": ts,
-                "project": project,
-                "session_id": session_id,
-                "model": model,
-                "cwd": cwd,
-                "git_branch": git_branch,
-                "input_tokens": usage.get("input_tokens", 0) or 0,
-                "output_tokens": usage.get("output_tokens", 0) or 0,
-                "cache_creation_input_tokens": usage.get("cache_creation_input_tokens", 0) or 0,
-                "cache_read_input_tokens": usage.get("cache_read_input_tokens", 0) or 0,
-            }
-        )
+        usage_rows.append({
+            "timestamp": ts,
+            "project": project,
+            "session_id": session_id,
+            "model": model,
+            "cwd": cwd,
+            "git_branch": git_branch,
+            "input_tokens": usage.get("input_tokens", 0) or 0,
+            "output_tokens": usage.get("output_tokens", 0) or 0,
+            "cache_creation_input_tokens": usage.get("cache_creation_input_tokens", 0)
+            or 0,
+            "cache_read_input_tokens": usage.get("cache_read_input_tokens", 0) or 0,
+        })
 
     usage_df = pd.DataFrame(usage_rows)
     tool_calls_df = pd.DataFrame(tool_call_rows)
     messages_df = pd.DataFrame(message_rows)
 
     if not usage_df.empty:
-        usage_df["timestamp"] = pd.to_datetime(usage_df["timestamp"], utc=True, errors="coerce")
+        usage_df["timestamp"] = pd.to_datetime(
+            usage_df["timestamp"], utc=True, errors="coerce"
+        )
         usage_df["date"] = usage_df["timestamp"].dt.date
     if not tool_calls_df.empty:
-        tool_calls_df["timestamp"] = pd.to_datetime(tool_calls_df["timestamp"], utc=True, errors="coerce")
+        tool_calls_df["timestamp"] = pd.to_datetime(
+            tool_calls_df["timestamp"], utc=True, errors="coerce"
+        )
     if not messages_df.empty:
-        messages_df["timestamp"] = pd.to_datetime(messages_df["timestamp"], utc=True, errors="coerce")
+        messages_df["timestamp"] = pd.to_datetime(
+            messages_df["timestamp"], utc=True, errors="coerce"
+        )
         messages_df["date"] = messages_df["timestamp"].dt.date
 
     len(usage_df), len(tool_calls_df), len(messages_df)
@@ -176,15 +175,18 @@ def _(mo):
     }
     DEFAULT_PRICING = (3.00, 15.00)
 
-    mo.md("Model pricing table (USD per million tokens, input/output) used for cost estimates:")
+    mo.md(
+        "Model pricing table (USD per million tokens, input/output) used for cost estimates:"
+    )
     return DEFAULT_PRICING, MODEL_PRICING
 
 
 @app.cell
 def _(MODEL_PRICING, mo, pd):
-    pricing_table = pd.DataFrame(
-        [{"model": m, "input_per_mtok": i, "output_per_mtok": o} for m, (i, o) in MODEL_PRICING.items()]
-    )
+    pricing_table = pd.DataFrame([
+        {"model": m, "input_per_mtok": i, "output_per_mtok": o}
+        for m, (i, o) in MODEL_PRICING.items()
+    ])
     mo.ui.table(pricing_table)
     return
 
@@ -248,7 +250,8 @@ def _(alt, mo, usage_df):
         daily_chart = mo.md("_No usage data found._")
     else:
         daily = (
-            usage_df.groupby("date")
+            usage_df
+            .groupby("date")
             .agg(
                 total_tokens=("total_tokens", "sum"),
                 estimated_cost_usd=("estimated_cost_usd", "sum"),
@@ -259,7 +262,8 @@ def _(alt, mo, usage_df):
         daily["date"] = daily["date"].astype(str)
 
         tokens_chart = (
-            alt.Chart(daily)
+            alt
+            .Chart(daily)
             .mark_bar()
             .encode(
                 x=alt.X("date:O", title="Date"),
@@ -269,7 +273,8 @@ def _(alt, mo, usage_df):
             .properties(width=700, height=250, title="Tokens per day")
         )
         cost_chart = (
-            alt.Chart(daily)
+            alt
+            .Chart(daily)
             .mark_bar(color="#c1666b")
             .encode(
                 x=alt.X("date:O", title="Date"),
@@ -278,7 +283,10 @@ def _(alt, mo, usage_df):
             )
             .properties(width=700, height=250, title="Estimated cost per day")
         )
-        daily_chart = mo.vstack([mo.ui.altair_chart(tokens_chart), mo.ui.altair_chart(cost_chart)])
+        daily_chart = mo.vstack([
+            mo.ui.altair_chart(tokens_chart),
+            mo.ui.altair_chart(cost_chart),
+        ])
 
     daily_chart
     return
@@ -298,7 +306,8 @@ def _(alt, mo, usage_df):
         by_project_chart = mo.md("_No usage data found._")
     else:
         by_project = (
-            usage_df.groupby("project")
+            usage_df
+            .groupby("project")
             .agg(
                 total_tokens=("total_tokens", "sum"),
                 estimated_cost_usd=("estimated_cost_usd", "sum"),
@@ -309,21 +318,25 @@ def _(alt, mo, usage_df):
             .sort_values("total_tokens", ascending=False)
         )
 
-        by_project_chart = mo.vstack(
-            [
-                mo.ui.table(by_project),
-                mo.ui.altair_chart(
-                    alt.Chart(by_project)
-                    .mark_bar()
-                    .encode(
-                        x=alt.X("total_tokens:Q", title="Total tokens"),
-                        y=alt.Y("project:N", sort="-x", title="Project"),
-                        tooltip=["project", "total_tokens", "estimated_cost_usd", "sessions"],
-                    )
-                    .properties(width=700, height=150, title="Tokens by project")
-                ),
-            ]
-        )
+        by_project_chart = mo.vstack([
+            mo.ui.table(by_project),
+            mo.ui.altair_chart(
+                alt
+                .Chart(by_project)
+                .mark_bar()
+                .encode(
+                    x=alt.X("total_tokens:Q", title="Total tokens"),
+                    y=alt.Y("project:N", sort="-x", title="Project"),
+                    tooltip=[
+                        "project",
+                        "total_tokens",
+                        "estimated_cost_usd",
+                        "sessions",
+                    ],
+                )
+                .properties(width=700, height=150, title="Tokens by project")
+            ),
+        ])
 
     by_project_chart
     return
@@ -343,7 +356,8 @@ def _(alt, mo, usage_df):
         by_model_chart = mo.md("_No usage data found._")
     else:
         by_model = (
-            usage_df.groupby("model")
+            usage_df
+            .groupby("model")
             .agg(
                 total_tokens=("total_tokens", "sum"),
                 estimated_cost_usd=("estimated_cost_usd", "sum"),
@@ -353,21 +367,22 @@ def _(alt, mo, usage_df):
             .sort_values("estimated_cost_usd", ascending=False)
         )
 
-        by_model_chart = mo.vstack(
-            [
-                mo.ui.table(by_model),
-                mo.ui.altair_chart(
-                    alt.Chart(by_model)
-                    .mark_arc()
-                    .encode(
-                        theta=alt.Theta("estimated_cost_usd:Q"),
-                        color=alt.Color("model:N"),
-                        tooltip=["model", "estimated_cost_usd", "total_tokens"],
-                    )
-                    .properties(width=400, height=300, title="Estimated cost share by model")
-                ),
-            ]
-        )
+        by_model_chart = mo.vstack([
+            mo.ui.table(by_model),
+            mo.ui.altair_chart(
+                alt
+                .Chart(by_model)
+                .mark_arc()
+                .encode(
+                    theta=alt.Theta("estimated_cost_usd:Q"),
+                    color=alt.Color("model:N"),
+                    tooltip=["model", "estimated_cost_usd", "total_tokens"],
+                )
+                .properties(
+                    width=400, height=300, title="Estimated cost share by model"
+                )
+            ),
+        ])
 
     by_model_chart
     return
@@ -387,11 +402,16 @@ def _(alt, mo, tool_calls_df):
         tool_chart = mo.md("_No tool call data found._")
     else:
         tool_counts = (
-            tool_calls_df.groupby("tool_name").size().reset_index(name="calls").sort_values("calls", ascending=False)
+            tool_calls_df
+            .groupby("tool_name")
+            .size()
+            .reset_index(name="calls")
+            .sort_values("calls", ascending=False)
         )
 
         tool_chart = mo.ui.altair_chart(
-            alt.Chart(tool_counts.head(20))
+            alt
+            .Chart(tool_counts.head(20))
             .mark_bar()
             .encode(
                 x=alt.X("calls:Q", title="Calls"),
@@ -419,41 +439,48 @@ def _(alt, messages_df, mo):
         sessions_chart = mo.md("_No message data found._")
     else:
         sessions_per_day = (
-            messages_df.dropna(subset=["date"])
+            messages_df
+            .dropna(subset=["date"])
             .groupby("date")["session_id"]
             .nunique()
             .reset_index(name="active_sessions")
         )
         sessions_per_day["date"] = sessions_per_day["date"].astype(str)
 
-        messages_per_day = messages_df.dropna(subset=["date"]).groupby(["date", "role"]).size().reset_index(name="messages")
+        messages_per_day = (
+            messages_df
+            .dropna(subset=["date"])
+            .groupby(["date", "role"])
+            .size()
+            .reset_index(name="messages")
+        )
         messages_per_day["date"] = messages_per_day["date"].astype(str)
 
-        sessions_chart = mo.vstack(
-            [
-                mo.ui.altair_chart(
-                    alt.Chart(sessions_per_day)
-                    .mark_line(point=True)
-                    .encode(
-                        x=alt.X("date:O", title="Date"),
-                        y=alt.Y("active_sessions:Q", title="Active sessions"),
-                        tooltip=["date", "active_sessions"],
-                    )
-                    .properties(width=700, height=250, title="Active sessions per day")
-                ),
-                mo.ui.altair_chart(
-                    alt.Chart(messages_per_day)
-                    .mark_bar()
-                    .encode(
-                        x=alt.X("date:O", title="Date"),
-                        y=alt.Y("messages:Q", title="Messages"),
-                        color=alt.Color("role:N"),
-                        tooltip=["date", "role", "messages"],
-                    )
-                    .properties(width=700, height=250, title="Messages per day by role")
-                ),
-            ]
-        )
+        sessions_chart = mo.vstack([
+            mo.ui.altair_chart(
+                alt
+                .Chart(sessions_per_day)
+                .mark_line(point=True)
+                .encode(
+                    x=alt.X("date:O", title="Date"),
+                    y=alt.Y("active_sessions:Q", title="Active sessions"),
+                    tooltip=["date", "active_sessions"],
+                )
+                .properties(width=700, height=250, title="Active sessions per day")
+            ),
+            mo.ui.altair_chart(
+                alt
+                .Chart(messages_per_day)
+                .mark_bar()
+                .encode(
+                    x=alt.X("date:O", title="Date"),
+                    y=alt.Y("messages:Q", title="Messages"),
+                    color=alt.Color("role:N"),
+                    tooltip=["date", "role", "messages"],
+                )
+                .properties(width=700, height=250, title="Messages per day by role")
+            ),
+        ])
 
     sessions_chart
     return
@@ -469,9 +496,9 @@ def _(mo):
 
 @app.cell
 def _(mo, usage_df):
-    mo.ui.table(usage_df.sort_values("timestamp", ascending=False)) if not usage_df.empty else mo.md(
-        "_No usage data found._"
-    )
+    mo.ui.table(
+        usage_df.sort_values("timestamp", ascending=False)
+    ) if not usage_df.empty else mo.md("_No usage data found._")
     return
 
 

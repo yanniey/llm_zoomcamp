@@ -10,6 +10,7 @@ dependencies = [
     "langchain>=1.3.14",
     "langchain-elasticsearch>=1.0.0",
     "langchain-huggingface>=1.2.2",
+    "marimo>=0.23.14",
     "minsearch>=0.1.1",
     "numpy>=2.5.0",
     "onnxruntime>=1.27.0",

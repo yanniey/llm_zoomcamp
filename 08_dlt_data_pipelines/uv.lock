@@ -565,6 +565,9 @@ wheels = [
 ]
 
 [package.optional-dependencies]
+duckdb = [
+    { name = "duckdb" },
+]
 hub = [
     { name = "dlthub" },
     { name = "dlthub-client" },
@@ -609,7 +612,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "altair" },
     { name = "croniter" },
-    { name = "dlt", extra = ["hub"] },
+    { name = "dlt", extra = ["duckdb", "hub"] },
     { name = "dlthub" },
     { name = "dlthub-client" },
     { name = "duckdb" },
@@ -628,7 +631,7 @@ dependencies = [
 requires-dist = [
     { name = "altair", specifier = ">=6.2.2" },
     { name = "croniter", specifier = ">=6.0.0" },
-    { name = "dlt", extras = ["hub"], specifier = ">=1.27.2,<2" },
+    { name = "dlt", extras = ["duckdb", "hub"], specifier = ">=1.28.1" },
     { name = "dlthub", specifier = ">=0.27.0,<1" },
     { name = "dlthub-client", specifier = ">=0.27.7,<1" },
     { name = "duckdb", specifier = ">=0.9" },
