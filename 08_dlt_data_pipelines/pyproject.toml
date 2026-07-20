@@ -20,3 +20,8 @@ dependencies = [
     "altair>=6.2.2",
     "deltalake>=1.6.2",
 ]
+
+[tool.uv.workspace]
+members = [
+    "homework",
+]
