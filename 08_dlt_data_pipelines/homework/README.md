@@ -162,8 +162,10 @@ The token counts are stored in the span attributes as
 trace. The number depends on how many searches the agent made, so
 report the range it falls into:
 
+<img src="homework_q3_pydantic_logfire.png" width=600>
+
 * [] 100 - 500
-* [] 1500 - 5000
+* [x] 1500 - 5000
 * [] 10000 - 20000
 * [] 50000 - 100000
 
